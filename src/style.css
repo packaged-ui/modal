@@ -1,0 +1,15 @@
+
+.js-modal { position: fixed; top: 0; right: 0; bottom: 0; left: 0; background: rgba(0, 0, 0, 0.8); z-index: 9999;}
+
+.js-modal.hidden {visibility: hidden;}
+
+.js-modal-content {
+  position:      relative;
+  background:    white;
+  width:         600px;
+  margin:        0 auto;
+  border-radius: 4px;
+  box-shadow:    2px 2px 5px 1px rgba(0, 0, 0, 0.5);
+  padding:       5px;
+  overflow:      hidden;
+}
