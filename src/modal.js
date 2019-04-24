@@ -12,6 +12,8 @@ export default class Modal
     this.content.classList.add('js-modal-content');
     this.content.addEventListener('click', function (e) {e.stopImmediatePropagation();});
     this.modal.appendChild(this.content);
+
+    this._updatePosition();
   }
 
   appendChild(newChild)
@@ -65,6 +67,6 @@ export default class Modal
 
   _updatePosition()
   {
-    this.content.style.top = ((this.modal.clientHeight / 3) - (this.content.clientHeight / 2)) + 'px';
+    this.content.style.top = ((document.body.clientHeight / 3) - (this.content.clientHeight / 2)) + 'px';
   }
 }
