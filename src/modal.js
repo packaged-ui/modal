@@ -67,6 +67,7 @@ export default class Modal
 
   _updatePosition()
   {
-    this.content.style.top = ((document.body.clientHeight / 3) - (this.content.clientHeight / 2)) + 'px';
+    let maxHeight = Math.max(this.modal.clientHeight, window.innerHeight);
+    this.content.style.top = ((maxHeight / 3) - (this.content.clientHeight / 2)) + 'px';
   }
 }
