@@ -17,7 +17,7 @@ export default class Modal
   appendChild(newChild)
   {
     this.content.appendChild(newChild);
-    this._debounceUpdatePosition();
+    this._postUpdateContent();
   }
 
   clear()
@@ -26,12 +26,13 @@ export default class Modal
     {
       this.content.removeChild(this.content.firstChild);
     }
-    this._debounceUpdatePosition();
+    this._postUpdateContent();
   }
 
   remove()
   {
     document.body.removeChild(this.modal);
+    this._postUpdateContent();
   }
 
   show()
@@ -40,20 +41,26 @@ export default class Modal
     document.body.appendChild(this.modal);
 
     // calculate position
-    this._updatePosition();
+    this._postUpdateContent();
     window.addEventListener('resize', this._debounceUpdatePosition.bind(this));
 
     // show it
     this.modal.classList.remove('hidden');
   }
 
+  _postUpdateContent()
+  {
+    this._debounceUpdatePosition();
+  }
+
   _debounceUpdatePosition()
   {
+    // debounce position update
     if(this._posDebounce)
     {
       clearTimeout(this._posDebounce);
     }
-    this._posDebounce = setTimeout(this._updatePosition.bind(this), 50)
+    this._posDebounce = setTimeout(this._updatePosition.bind(this), 100)
   }
 
   _updatePosition()
