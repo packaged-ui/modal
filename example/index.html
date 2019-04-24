@@ -1,0 +1,18 @@
+<html>
+<script src="../build/modal.min.js"></script>
+<body>
+<script type="module">
+  let m = new Modal();
+  m.show();
+  setInterval(
+    function ()
+    {
+      m.appendChild(document.createTextNode('Some content delayed'));
+      m.appendChild(document.createElement('hr'));
+    },
+    3000
+  );
+  setInterval(function () {m.clear();}, 10000);
+</script>
+</body>
+</html>
