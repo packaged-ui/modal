@@ -4,9 +4,22 @@ export default class Modal
 {
   constructor()
   {
+    const self = this;
+
     this.modal = document.createElement('div');
-    this.modal.addEventListener('click', this.remove.bind(this));
     this.modal.classList.add('js-modal', 'hidden');
+    var downTarget = null;
+    this.modal.addEventListener('mousedown', function (e)
+    {
+      downTarget = e.target;
+    });
+    this.modal.addEventListener('mouseup', function (e)
+    {
+      if((downTarget === self.modal) && (e.target === self.modal))
+      {
+        self.remove();
+      }
+    });
 
     this.content = document.createElement('div');
     this.content.classList.add('js-modal-content');
