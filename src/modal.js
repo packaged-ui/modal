@@ -23,7 +23,6 @@ export default class Modal
 
     this.content = document.createElement('div');
     this.content.classList.add('js-modal-content');
-    this.content.addEventListener('click', function (e) {e.stopImmediatePropagation();});
     this.modal.appendChild(this.content);
 
     this._updatePosition();
