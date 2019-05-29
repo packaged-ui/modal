@@ -6,6 +6,8 @@ export default class Modal
   {
     const self = this;
 
+    this._isLightbox = false;
+
     this.modal = document.createElement('div');
     this.modal.classList.add('js-modal', 'hidden');
     var downTarget = null;
@@ -15,7 +17,7 @@ export default class Modal
     });
     this.modal.addEventListener('mouseup', function (e)
     {
-      if((downTarget === self.modal) && (e.target === self.modal))
+      if((self._isLightbox) && (downTarget === self.modal) && (e.target === self.modal))
       {
         self.remove();
       }
@@ -26,6 +28,11 @@ export default class Modal
     this.modal.appendChild(this.content);
 
     this._updatePosition();
+  }
+
+  lightboxMode(value)
+  {
+    this._isLightbox = value;
   }
 
   appendChild(newChild)
@@ -56,7 +63,7 @@ export default class Modal
 
     // calculate position
     this._postUpdateContent();
-    window.addEventListener('resize', this._debounceUpdatePosition.bind(this));
+    window.addEventListener('resize', this._updatePosition.bind(this));
 
     // show it
     this.modal.classList.remove('hidden');
@@ -64,17 +71,7 @@ export default class Modal
 
   _postUpdateContent()
   {
-    this._debounceUpdatePosition();
-  }
-
-  _debounceUpdatePosition()
-  {
-    // debounce position update
-    if(this._posDebounce)
-    {
-      clearTimeout(this._posDebounce);
-    }
-    this._posDebounce = setTimeout(this._updatePosition.bind(this), 100)
+    this._updatePosition();
   }
 
   _updatePosition()

@@ -3,6 +3,9 @@
 <body>
 <script type="module">
   let m = new Modal();
+  m.lightboxMode(true);
+  m.appendChild(document.createTextNode('initial content'));
+  m.appendChild(document.createElement('hr'));
   m.show();
   setInterval(
     function ()
