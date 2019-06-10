@@ -19,7 +19,7 @@ export default class Modal
     {
       if((self._isLightbox) && (downTarget === self.modal) && (e.target === self.modal))
       {
-        self.remove();
+        self.hide();
       }
     });
 
@@ -50,23 +50,29 @@ export default class Modal
     this._postUpdateContent();
   }
 
-  remove()
+  hide()
   {
-    document.body.removeChild(this.modal);
-    this._postUpdateContent();
+    if(document.body.contains(this.modal))
+    {
+      document.body.removeChild(this.modal);
+      this._postUpdateContent();
+    }
   }
 
   show()
   {
-    // add to document
-    document.body.appendChild(this.modal);
+    if(!document.body.contains(this.modal))
+    {
+      // add to document
+      document.body.appendChild(this.modal);
 
-    // calculate position
-    this._postUpdateContent();
-    window.addEventListener('resize', this._updatePosition.bind(this));
+      // calculate position
+      this._postUpdateContent();
+      window.addEventListener('resize', this._updatePosition.bind(this));
 
-    // show it
-    this.modal.classList.remove('hidden');
+      // show it
+      this.modal.classList.remove('hidden');
+    }
   }
 
   _postUpdateContent()
