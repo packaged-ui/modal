@@ -1,3 +1,5 @@
+import debounce from 'lodash.debounce/index';
+import CloseIcon from './close.svg';
 import './style.css';
 
 export default class Modal
@@ -10,16 +12,36 @@ export default class Modal
 
     this.modal = document.createElement('div');
     this.modal.classList.add('js-modal', 'hidden');
-    var downTarget = null;
+
+    this.wrapper = document.createElement('div');
+    this.wrapper.classList.add('js-modal-wrapper');
+    this.modal.appendChild(this.wrapper);
+
+    let closeRenderer = document.createElement('template');
+    closeRenderer.innerHTML = CloseIcon;
+    let closeButton = closeRenderer.content.children[0];
+    this.wrapper.appendChild(closeButton);
+
+    this.content = document.createElement('div');
+    this.content.classList.add('js-modal-content');
+    this.wrapper.appendChild(this.content);
+
+    // Events
+
+    let downTarget = null;
     this.modal.addEventListener('mousedown', function (e)
     {
       downTarget = e.target;
     });
     this.modal.addEventListener('mouseup', function (e)
     {
-      if((self._isLightbox) && (downTarget === self.modal) && (e.target === self.modal))
+      if(downTarget === e.target)
       {
-        self.hide();
+        if((e.target === closeButton)
+          || (self._isLightbox && (e.target === self.modal)))
+        {
+          self.hide();
+        }
       }
     });
     document.addEventListener('keyup', function (e)
@@ -30,11 +52,7 @@ export default class Modal
       }
     });
 
-    this.content = document.createElement('div');
-    this.content.classList.add('js-modal-content');
-    this.modal.appendChild(this.content);
-
-    this._updatePosition();
+    this.updatePosition();
   }
 
   lightboxMode(value)
@@ -75,7 +93,8 @@ export default class Modal
 
       // calculate position
       this._postUpdateContent();
-      window.addEventListener('resize', this._updatePosition.bind(this));
+      window.addEventListener('resize', _getDebounceFn(this));
+      window.addEventListener('orientationchange', _getDebounceFn(this));
 
       // show it
       this.modal.classList.remove('hidden');
@@ -84,12 +103,17 @@ export default class Modal
 
   _postUpdateContent()
   {
-    this._updatePosition();
+    this.updatePosition();
   }
 
-  _updatePosition()
+  updatePosition()
   {
     let maxHeight = Math.max(this.modal.clientHeight, window.innerHeight);
-    this.content.style.top = ((maxHeight / 3) - (this.content.clientHeight / 2)) + 'px';
+    this.wrapper.style.top = ((maxHeight / 3) - (this.wrapper.clientHeight / 2)) + 'px';
   }
+}
+
+function _getDebounceFn(modal)
+{
+  return debounce(modal.updatePosition.bind(modal), 200, {'maxWait': 500});
 }

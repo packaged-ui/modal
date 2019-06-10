@@ -3,18 +3,9 @@
 <body>
 <script type="module">
   let m = new Modal();
-  m.appendChild(document.createTextNode('initial content'));
+  m.appendChild(document.createTextNode('Content here'));
   m.appendChild(document.createElement('hr'));
   m.show();
-  setInterval(
-    function ()
-    {
-      m.appendChild(document.createTextNode('Some content delayed'));
-      m.appendChild(document.createElement('hr'));
-    },
-    3000
-  );
-  setInterval(function () {m.clear();}, 10000);
 </script>
 </body>
 </html>
