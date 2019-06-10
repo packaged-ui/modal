@@ -22,6 +22,13 @@ export default class Modal
         self.hide();
       }
     });
+    document.addEventListener('keyup', function (e)
+    {
+      if(e.key === 'Escape' || e.key === "Esc" || e.keyCode === 27)
+      {
+        self.hide();
+      }
+    });
 
     this.content = document.createElement('div');
     this.content.classList.add('js-modal-content');
