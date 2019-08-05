@@ -1,6 +1,6 @@
 {
   "name": "@packaged-ui/modal",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "repository": "git@github.com:packaged-ui/modal.git",
   "author": "Tom Kay <oridan82@gmail.com>",
   "license": "MIT",
