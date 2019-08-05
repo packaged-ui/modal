@@ -4,6 +4,7 @@
   "repository": "git@github.com:packaged-ui/modal.git",
   "author": "Tom Kay <oridan82@gmail.com>",
   "license": "MIT",
+  "main": "src/modal.js",
   "devDependencies": {
     "css-loader": "^2.1.1",
     "style-loader": "^0.23.1",
