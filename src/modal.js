@@ -4,7 +4,7 @@ import './style.css';
 
 export default class Modal
 {
-  constructor()
+  constructor(element)
   {
     const self = this;
 
@@ -25,6 +25,11 @@ export default class Modal
     this.content = document.createElement('div');
     this.content.classList.add('js-modal-content');
     this.wrapper.appendChild(this.content);
+
+    if(element)
+    {
+      this.appendChild(element);
+    }
 
     // Events
 

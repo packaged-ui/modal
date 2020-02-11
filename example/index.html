@@ -1,11 +1,18 @@
 <html>
 <script src="../build/modal.min.js"></script>
 <body>
-<script type="module">
-  let m = new Modal();
-  m.appendChild(document.createTextNode('Content here'));
-  m.appendChild(document.createElement('hr'));
-  m.show();
+
+<div id="my-modal">
+  Content here
+  <hr>
+  more content
+</div>
+
+<script>
+  const m = new Modal(document.getElementById('my-modal'));
 </script>
+
+<a onclick="m.show();">show it</a>
+
 </body>
 </html>
