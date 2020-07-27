@@ -1,74 +1,73 @@
 import debounce from 'lodash.debounce/index';
-import CloseIcon from './close.svg';
 import './style.css';
+
+const _eleMap = new Map();
 
 export default class Modal
 {
+  static create(element)
+  {
+    if(!_eleMap.has(element))
+    {
+      _eleMap.set(element, new this.prototype.constructor(...arguments));
+    }
+    return _eleMap.get(element);
+  }
+
+  static has(element)
+  {
+    return _eleMap.has(element);
+  }
+
+  static hide(element)
+  {
+    let p = element;
+    do
+    {
+      if(Modal.has(p))
+      {
+        Modal.create(p).hide();
+        return true;
+      }
+    }
+    while((p = p.parentNode));
+  }
+
   constructor(element)
   {
-    const self = this;
-
-    this._isLightbox = false;
-
     this.modal = document.createElement('div');
-    this.modal.classList.add('js-modal', 'hidden');
+    this.modal.classList.add('modal');
 
     this.wrapper = document.createElement('div');
-    this.wrapper.classList.add('js-modal-wrapper');
+    this.wrapper.classList.add('modal__wrapper');
     this.modal.appendChild(this.wrapper);
 
-    let closeRenderer = document.createElement('template');
-    closeRenderer.innerHTML = CloseIcon;
-    let closeButton = closeRenderer.content.children[0];
-    this.wrapper.appendChild(closeButton);
-
-    this.content = document.createElement('div');
-    this.content.classList.add('js-modal-content');
-    this.wrapper.appendChild(this.content);
-
-    if(element)
+    if(element.matches('.modal__content'))
     {
+      this.content = element;
+    }
+    else
+    {
+      this.content = document.createElement('div');
+      this.content.classList.add('modal__content');
       this.appendChild(element);
     }
 
-    // Events
+    if(element.hasAttribute('id'))
+    {
+      this.modal.setAttribute('id', element.getAttribute('id') + '--outer');
+    }
 
-    let downTarget = null;
-    this.modal.addEventListener('mousedown', function (e)
-    {
-      downTarget = e.target;
-    });
-    this.modal.addEventListener('mouseup', function (e)
-    {
-      if(downTarget === e.target)
-      {
-        if((e.target === closeButton)
-          || (self._isLightbox && (e.target === self.modal)))
-        {
-          self.hide();
-        }
-      }
-    });
-    document.addEventListener('keyup', function (e)
-    {
-      if(e.key === 'Escape' || e.key === "Esc" || e.keyCode === 27)
-      {
-        self.hide();
-      }
-    });
+    this.wrapper.appendChild(this.content);
 
     this.updatePosition();
-  }
-
-  lightboxMode(value)
-  {
-    this._isLightbox = value;
   }
 
   appendChild(newChild)
   {
     this.content.appendChild(newChild);
     this._postUpdateContent();
+    return this;
   }
 
   clear()
@@ -78,6 +77,7 @@ export default class Modal
       this.content.removeChild(this.content.firstChild);
     }
     this._postUpdateContent();
+    return this;
   }
 
   hide()
@@ -94,6 +94,7 @@ export default class Modal
       document.body.removeChild(this.modal);
       this.modal.dispatchEvent(_getEvent('modal-hidden', this.modal));
     }
+    return this;
   }
 
   show()
@@ -116,6 +117,7 @@ export default class Modal
       this.modal.classList.remove('hidden');
       this.modal.dispatchEvent(_getEvent('modal-shown', this.modal));
     }
+    return this;
   }
 
   _postUpdateContent()
@@ -125,23 +127,52 @@ export default class Modal
 
   updatePosition()
   {
-    let maxHeight = Math.max(this.modal.clientHeight, window.innerHeight);
-    this.wrapper.style.top = Math.max(0, (maxHeight / 3) - (this.wrapper.clientHeight / 2)) + 'px';
+    const maxHeight = Math.max(this.modal.clientHeight, window.innerHeight);
+    const surplus = Math.max(0, maxHeight - this.wrapper.clientHeight);
+    this.wrapper.style.top = (surplus / 3) + 'px';
+    return this;
   }
 }
 
-const debounceMap = new Map();
+const _debounceMap = new Map();
 
 function _getDebounceFn(modal)
 {
-  if(!debounceMap.has(modal))
+  if(!_debounceMap.has(modal))
   {
-    debounceMap.set(modal, debounce(modal.updatePosition.bind(modal), 200, {'maxWait': 500}))
+    _debounceMap.set(modal, debounce(modal.updatePosition.bind(modal), 200, {'maxWait': 500}))
   }
-  return debounceMap.get(modal);
+  return _debounceMap.get(modal);
 }
 
 function _getEvent(eventName, modal, cancelable = false)
 {
-  return new CustomEvent(eventName, {detail: {modal}, cancelable: true, bubbles: true});
+  return new CustomEvent(eventName, {detail: {modal}, cancelable: cancelable, bubbles: true});
 }
+
+document.addEventListener(
+  'click', (e) =>
+  {
+    if(e.target.matches('[modal-closer]'))
+    {
+      e.preventDefault();
+      Modal.hide(e.target);
+    }
+  },
+);
+
+document.addEventListener(
+  'keyup', e =>
+  {
+    if(e.key === 'Escape' || e.key === 'Esc' || e.keyCode === 27)
+    {
+      // find the last modal's closer
+      const closer = document.querySelector('.modal:last-of-type .modal__content [modal-closer]');
+      if(closer)
+      {
+        e.preventDefault();
+        Modal.hide(closer);
+      }
+    }
+  },
+);

@@ -5,11 +5,11 @@
 <div id="my-modal">
   Content here
   <hr>
-  more content
+  <button modal-closer>Close</button>
 </div>
 
 <script>
-  const m = new Modal(document.getElementById('my-modal'));
+  const m = Modal.create(document.getElementById('my-modal'));
 </script>
 
 <a onclick="m.show();">show it</a>

@@ -1,5 +1,5 @@
 
-.js-modal {
+.modal {
   position:   fixed;
   top:        0;
   right:      0;
@@ -9,11 +9,11 @@
   z-index:    9999;
 }
 
-.js-modal.hidden {
+.modal.hidden {
   visibility: hidden;
 }
 
-.js-modal-wrapper {
+.modal__wrapper {
   position:         relative;
   box-sizing:       border-box;
   background:       white;
@@ -32,29 +32,17 @@
   transition:       all 0.26s ease;
 }
 
-.js-modal-content {
+.modal__content {
   z-index: 1;
 }
 
-.js-modal-close {
-  cursor:   pointer;
-  position: absolute;
-  top:      0;
-  right:    0;
-  margin:   5px;
-  opacity:  0.3;
-  width:    20px;
-  height:   20px;
-  z-index:  2;
-}
-
-.js-modal-content:empty {
+.modal__content:empty {
   visibility: hidden;
   transform:  scaleY(0);
 }
 
 @media only screen and (max-width: 600px) {
-  .js-modal-wrapper {
+  .modal__wrapper {
     position:      fixed !important;
     top:           0 !important;
     right:         0 !important;
