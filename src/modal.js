@@ -82,19 +82,26 @@ export default class Modal
 
   hide()
   {
-    if(document.body.contains(this.modal))
+    if(
+      (document.body.contains(this.modal))
+      && document.dispatchEvent(_getEvent('modal-hide', this.modal, true))
+    )
     {
+      this.modal.classList.remove('hidden');
       const debounceFn = _getDebounceFn(this);
       window.removeEventListener('resize', debounceFn);
       window.removeEventListener('orientationchange', debounceFn);
       document.body.removeChild(this.modal);
-      this._postUpdateContent();
+      this.modal.dispatchEvent(_getEvent('modal-hidden', this.modal));
     }
   }
 
   show()
   {
-    if(!document.body.contains(this.modal))
+    if(
+      (!document.body.contains(this.modal))
+      && document.dispatchEvent(_getEvent('modal-show', this.modal, true))
+    )
     {
       // add to document
       document.body.appendChild(this.modal);
@@ -107,6 +114,7 @@ export default class Modal
 
       // show it
       this.modal.classList.remove('hidden');
+      this.modal.dispatchEvent(_getEvent('modal-shown', this.modal));
     }
   }
 
@@ -131,4 +139,9 @@ function _getDebounceFn(modal)
     debounceMap.set(modal, debounce(modal.updatePosition.bind(modal), 200, {'maxWait': 500}))
   }
   return debounceMap.get(modal);
+}
+
+function _getEvent(eventName, modal, cancelable = false)
+{
+  return new CustomEvent(eventName, {detail: {modal}, cancelable: true, bubbles: true});
 }
