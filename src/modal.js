@@ -103,7 +103,7 @@ export default class Modal
   {
     if(
       (document.body.contains(this.modal))
-      && document.dispatchEvent(_getEvent('modal-hide', this.modal, true))
+      && this.modal.dispatchEvent(_getEvent('modal-hide', this.modal, true))
     )
     {
       this.modal.classList.remove('hidden');
@@ -111,7 +111,7 @@ export default class Modal
       window.removeEventListener('resize', debounceFn);
       window.removeEventListener('orientationchange', debounceFn);
       _modalContainer.removeChild(this.modal);
-      this.modal.dispatchEvent(_getEvent('modal-hidden', this.modal));
+      document.dispatchEvent(_getEvent('modal-hidden', this.modal));
     }
     return this;
   }
