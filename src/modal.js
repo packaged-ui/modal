@@ -84,6 +84,9 @@ export default class Modal
   {
     if(document.body.contains(this.modal))
     {
+      const debounceFn = _getDebounceFn(this);
+      window.removeEventListener('resize', debounceFn);
+      window.removeEventListener('orientationchange', debounceFn);
       document.body.removeChild(this.modal);
       this._postUpdateContent();
     }
@@ -98,8 +101,9 @@ export default class Modal
 
       // calculate position
       this._postUpdateContent();
-      window.addEventListener('resize', _getDebounceFn(this));
-      window.addEventListener('orientationchange', _getDebounceFn(this));
+      const debounceFn = _getDebounceFn(this);
+      window.addEventListener('resize', debounceFn);
+      window.addEventListener('orientationchange', debounceFn);
 
       // show it
       this.modal.classList.remove('hidden');
@@ -118,7 +122,13 @@ export default class Modal
   }
 }
 
+const debounceMap = new Map();
+
 function _getDebounceFn(modal)
 {
-  return debounce(modal.updatePosition.bind(modal), 200, {'maxWait': 500});
+  if(!debounceMap.has(modal))
+  {
+    debounceMap.set(modal, debounce(modal.updatePosition.bind(modal), 200, {'maxWait': 500}))
+  }
+  return debounceMap.get(modal);
 }
