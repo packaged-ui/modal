@@ -1,6 +1,9 @@
 import debounce from 'lodash.debounce/index';
 import './style.css';
 
+const _modalContainer = document.createElement('div');
+_modalContainer.classList.add('modal__container');
+
 const _eleMap = new Map();
 const _idMap = new Map();
 
@@ -107,7 +110,7 @@ export default class Modal
       const debounceFn = _getDebounceFn(this);
       window.removeEventListener('resize', debounceFn);
       window.removeEventListener('orientationchange', debounceFn);
-      document.body.removeChild(this.modal);
+      _modalContainer.removeChild(this.modal);
       this.modal.dispatchEvent(_getEvent('modal-hidden', this.modal));
     }
     return this;
@@ -121,7 +124,8 @@ export default class Modal
     )
     {
       // add to document
-      document.body.appendChild(this.modal);
+      _modalContainer.appendChild(this.modal)
+      document.body.appendChild(_modalContainer);
 
       // calculate position
       this._postUpdateContent();
