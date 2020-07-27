@@ -2,14 +2,25 @@ import debounce from 'lodash.debounce/index';
 import './style.css';
 
 const _eleMap = new Map();
+const _idMap = new Map();
 
 export default class Modal
 {
   static create(element)
   {
+    if(element instanceof Modal)
+    {
+      return element;
+    }
+
     if(!_eleMap.has(element))
     {
-      _eleMap.set(element, new this.prototype.constructor(...arguments));
+      const modal = new this.prototype.constructor(...arguments);
+      _eleMap.set(element, modal);
+      if(element.hasAttribute('id'))
+      {
+        _idMap.set(element.getAttribute('id'), modal);
+      }
     }
     return _eleMap.get(element);
   }
@@ -59,6 +70,11 @@ export default class Modal
     }
 
     this.wrapper.appendChild(this.content);
+
+    if(element.style.display === 'none')
+    {
+      element.style.removeProperty('display');
+    }
 
     this.updatePosition();
   }
@@ -153,10 +169,26 @@ function _getEvent(eventName, modal, cancelable = false)
 document.addEventListener(
   'click', (e) =>
   {
-    if(e.target.matches('[modal-closer]'))
+    const closer = e.target.closest('[modal-closer]');
+    if(closer)
     {
       e.preventDefault();
       Modal.hide(e.target);
+    }
+
+    const launcher = e.target.closest('[modal-launcher]');
+    if(launcher)
+    {
+      e.preventDefault();
+      const modalId = launcher.getAttribute('modal-launcher');
+      const modalEle = document.getElementById(modalId) || _idMap.get(modalId);
+      if(!modalEle)
+      {
+        console.error('No modal could be found with the id ' + launcher.getAttribute('modal-launcher'));
+        return;
+      }
+
+      Modal.create(modalEle).show();
     }
   },
 );

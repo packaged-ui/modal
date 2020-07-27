@@ -2,17 +2,13 @@
 <script src="../build/modal.min.js"></script>
 <body>
 
-<div id="my-modal">
+<div id="my-modal" style="display: none">
   Content here
   <hr>
   <button modal-closer>Close</button>
 </div>
 
-<script>
-  const m = Modal.create(document.getElementById('my-modal'));
-</script>
-
-<a onclick="m.show();">show it</a>
+<button modal-launcher="my-modal">show it</button>
 
 </body>
 </html>
