@@ -147,8 +147,13 @@ export default class Modal
 
   updatePosition()
   {
-    const maxHeight = Math.max(this.modal.clientHeight, window.innerHeight);
-    const surplus = Math.max(0, maxHeight - this.wrapper.clientHeight);
+    const modalStyle = getComputedStyle(this.modal);
+    const modalPadding = parseInt(modalStyle.paddingTop) + parseInt(modalStyle.paddingBottom) || 0;
+
+    // modal.clientHeight is the total height excluding the page scrollbar
+    // wrapper.offsetHeight is the height of the modal content including any scrollbar
+    const surplus = Math.max(0, this.modal.clientHeight - this.wrapper.offsetHeight - modalPadding);
+
     this.wrapper.style.top = (surplus / 3) + 'px';
     return this;
   }
