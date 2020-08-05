@@ -67,12 +67,17 @@ export default class Modal
       this.appendChild(element);
     }
 
+    this.wrapper.appendChild(this.content);
+
     if(element.hasAttribute('id'))
     {
       this.modal.setAttribute('id', element.getAttribute('id') + '--outer');
     }
 
-    this.wrapper.appendChild(this.content);
+    if(element.hasAttribute('modal-class'))
+    {
+      this.modal.classList.add(element.getAttribute('modal-class'));
+    }
 
     if(element.style.display === 'none')
     {
