@@ -14,6 +14,9 @@
   "scripts": {
     "build": "webpack"
   },
+  "files": [
+    "/src"
+  ],
   "dependencies": {
     "lodash.debounce": "^4.0.8",
     "svg-inline-loader": "^0.8.0"
