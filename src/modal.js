@@ -4,8 +4,18 @@ import './style.css';
 const _modalContainer = document.createElement('div');
 _modalContainer.classList.add('modal__container');
 
+const _modalHidden = document.createElement('div');
+_modalHidden.classList.add('modal__hidden');
+_modalContainer.appendChild(_modalHidden);
+
+const _modalShown = document.createElement('div');
+_modalShown.classList.add('modal__shown');
+_modalContainer.appendChild(_modalShown);
+
 const _eleMap = new Map();
 const _idMap = new Map();
+
+let _containerAdded = false;
 
 export default class Modal
 {
@@ -107,15 +117,15 @@ export default class Modal
   hide()
   {
     if(
-      (document.body.contains(this.modal))
+      (_modalShown.contains(this.modal))
       && this.modal.dispatchEvent(_getEvent('modal-hide', this.modal, true))
     )
     {
       this.modal.classList.remove('hidden');
+      _modalHidden.appendChild(this.modal)
       const debounceFn = _getDebounceFn(this);
       window.removeEventListener('resize', debounceFn);
       window.removeEventListener('orientationchange', debounceFn);
-      _modalContainer.removeChild(this.modal);
       document.dispatchEvent(_getEvent('modal-hidden', this.modal));
     }
     return this;
@@ -124,13 +134,17 @@ export default class Modal
   show()
   {
     if(
-      (!document.body.contains(this.modal))
+      (!_modalShown.contains(this.modal))
       && document.dispatchEvent(_getEvent('modal-show', this.modal, true))
     )
     {
       // add to document
-      _modalContainer.appendChild(this.modal)
-      document.body.appendChild(_modalContainer);
+      _modalShown.appendChild(this.modal)
+      if(!_containerAdded)
+      {
+        _containerAdded = true;
+        document.body.appendChild(_modalContainer);
+      }
 
       // calculate position
       this._postUpdateContent();
