@@ -57,6 +57,20 @@ export default class Modal
     while((p = p.parentNode));
   }
 
+  static remove(element)
+  {
+    let p = element;
+    do
+    {
+      if(Modal.has(p))
+      {
+        Modal.create(p).remove();
+        return true;
+      }
+    }
+    while((p = p.parentNode));
+  }
+
   constructor(element)
   {
     this.modal = document.createElement('div');
@@ -123,11 +137,17 @@ export default class Modal
     {
       this.modal.classList.remove('hidden');
       _modalHidden.appendChild(this.modal)
-      const debounceFn = _getDebounceFn(this);
-      window.removeEventListener('resize', debounceFn);
-      window.removeEventListener('orientationchange', debounceFn);
+      this._removeEvents();
       document.dispatchEvent(_getEvent('modal-hidden', this.modal));
     }
+    return this;
+  }
+
+  remove()
+  {
+    this.modal.parentElement.removeChild(this.modal);
+    this._removeEvents();
+    document.dispatchEvent(_getEvent('modal-removed', this.modal));
     return this;
   }
 
@@ -148,9 +168,7 @@ export default class Modal
 
       // calculate position
       this._postUpdateContent();
-      const debounceFn = _getDebounceFn(this);
-      window.addEventListener('resize', debounceFn);
-      window.addEventListener('orientationchange', debounceFn);
+      this._addEvents();
 
       // show it
       this.modal.classList.remove('hidden');
@@ -174,6 +192,24 @@ export default class Modal
     const surplus = Math.max(0, this.modal.clientHeight - this.wrapper.offsetHeight - modalPadding);
 
     this.wrapper.style.top = (surplus / 3) + 'px';
+    return this;
+  }
+
+  _addEvents()
+  {
+    this._removeEvents();
+
+    const debounceFn = _getDebounceFn(this);
+    window.addEventListener('resize', debounceFn);
+    window.addEventListener('orientationchange', debounceFn);
+    return this;
+  }
+
+  _removeEvents()
+  {
+    const debounceFn = _getDebounceFn(this);
+    window.removeEventListener('resize', debounceFn);
+    window.removeEventListener('orientationchange', debounceFn);
     return this;
   }
 }
