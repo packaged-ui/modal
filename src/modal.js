@@ -179,9 +179,16 @@ export default class Modal
 
   _postUpdateContent()
   {
-    this.content.querySelectorAll('.modal__content').forEach((m) => {
-      Modal.create(m).hide();
-    });
+    // find children with an id, check to see if they are modal contents, or targets of modal-launcher or modal-closer
+    this.content.querySelectorAll('[id]').forEach(
+      i =>
+      {
+        const id = i.getAttribute('id');
+        if(i.matches('.modal__content') || (document.querySelectorAll(`[modal-launcher="${id}"],[modal-closer="${id}"]`).length > 0))
+        {
+          Modal.create(i);
+        }
+      });
 
     this.updatePosition();
   }
