@@ -88,7 +88,7 @@ export default class Modal
     {
       this.content = document.createElement('div');
       this.content.classList.add('modal__content');
-      this.appendChild(element);
+      this.content.appendChild(element);
     }
 
     this.wrapper.appendChild(this.content);
@@ -108,7 +108,7 @@ export default class Modal
       element.style.removeProperty('display');
     }
 
-    this.updatePosition();
+    _modalHidden.appendChild(this.modal)
   }
 
   appendChild(newChild)
