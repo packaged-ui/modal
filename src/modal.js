@@ -179,9 +179,16 @@ export default class Modal
 
   _postUpdateContent()
   {
-    this.content.querySelectorAll('.modal__content').forEach((m) => {
-      Modal.create(m).hide();
-    });
+
+    const contents = this.content.querySelectorAll('.modal__content');
+
+    // Run if nested modal
+    if(contents.length > 1)
+    {
+      contents.forEach((m) => {
+        Modal.create(m).hide();
+      });
+    }
 
     this.updatePosition();
   }
