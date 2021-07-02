@@ -33,6 +33,8 @@
   background: rgba(0, 0, 0, 0.8);
   display:    none;
   padding:    3px;
+
+  transform:  translateZ(9999px);
 }
 
 .modal__shown .modal:last-of-type {
