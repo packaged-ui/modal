@@ -184,7 +184,7 @@ export default class Modal
       i =>
       {
         const id = i.getAttribute('id');
-        if(i.matches('.modal__content') || (document.querySelectorAll(`[modal-launcher="${id}"],[modal-closer="${id}"]`).length > 0))
+        if(i.matches('.modal__content') || (document.querySelectorAll(`[modal-launcher="${id}"], [modal-closer="${id}"]`).length > 0))
         {
           Modal.create(i);
         }
@@ -238,7 +238,7 @@ function _getDebounceFn(modal)
 
 function _getEvent(eventName, modal, cancelable = false)
 {
-  return new CustomEvent(eventName, {detail: {modal}, cancelable: cancelable, bubbles: true});
+  return new CustomEvent(eventName, {detail: {modal}, cancelable: cancelable, bubbles: true, composed: true});
 }
 
 document.addEventListener(
