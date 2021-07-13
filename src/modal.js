@@ -1,6 +1,5 @@
-import {init, Modal} from "./index";
+import {Modal} from "./index";
 
-export * from './index';
 export default Modal;
 
-init();
+Modal.init();

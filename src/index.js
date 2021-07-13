@@ -15,6 +15,8 @@ _modalContainer.appendChild(_modalShown);
 const _eleMap = new Map();
 const _idMap = new Map();
 
+let _initialized = false;
+
 export class Modal
 {
   static create(element)
@@ -220,6 +222,58 @@ export class Modal
     window.removeEventListener('orientationchange', debounceFn);
     return this;
   }
+
+  static init()
+  {
+    if(_initialized)
+    {
+      return;
+    }
+    _initialized = true;
+
+    document.addEventListener(
+      'click', (e) =>
+      {
+        const closer = e.target.closest('[modal-closer]');
+        if(closer)
+        {
+          e.preventDefault();
+          Modal.hide(e.target);
+        }
+
+        const launcher = e.target.closest('[modal-launcher]');
+        if(launcher)
+        {
+          e.preventDefault();
+          const modalId = launcher.getAttribute('modal-launcher');
+          const modalEle = document.getElementById(modalId) || _idMap.get(modalId);
+          if(!modalEle)
+          {
+            console.error('No modal could be found with the id ' + launcher.getAttribute('modal-launcher'));
+            return;
+          }
+
+          Modal.create(modalEle).show();
+        }
+      },
+    );
+
+    document.addEventListener(
+      'keyup', e =>
+      {
+        if(e.key === 'Escape' || e.key === 'Esc' || e.keyCode === 27)
+        {
+          // find the last modal's closer
+          const closer = document.querySelector('.modal:last-of-type .modal__content [modal-closer]');
+          if(closer)
+          {
+            e.preventDefault();
+            Modal.hide(closer);
+          }
+        }
+      },
+    );
+  }
 }
 
 const _debounceMap = new Map();
@@ -236,50 +290,4 @@ function _getDebounceFn(modal)
 function _getEvent(eventName, modal, cancelable = false)
 {
   return new CustomEvent(eventName, {detail: {modal}, cancelable: cancelable, bubbles: true, composed: true});
-}
-
-export function init()
-{
-  document.addEventListener(
-    'click', (e) =>
-    {
-      const closer = e.target.closest('[modal-closer]');
-      if(closer)
-      {
-        e.preventDefault();
-        Modal.hide(e.target);
-      }
-
-      const launcher = e.target.closest('[modal-launcher]');
-      if(launcher)
-      {
-        e.preventDefault();
-        const modalId = launcher.getAttribute('modal-launcher');
-        const modalEle = document.getElementById(modalId) || _idMap.get(modalId);
-        if(!modalEle)
-        {
-          console.error('No modal could be found with the id ' + launcher.getAttribute('modal-launcher'));
-          return;
-        }
-
-        Modal.create(modalEle).show();
-      }
-    },
-  );
-
-  document.addEventListener(
-    'keyup', e =>
-    {
-      if(e.key === 'Escape' || e.key === 'Esc' || e.keyCode === 27)
-      {
-        // find the last modal's closer
-        const closer = document.querySelector('.modal:last-of-type .modal__content [modal-closer]');
-        if(closer)
-        {
-          e.preventDefault();
-          Modal.hide(closer);
-        }
-      }
-    },
-  );
 }
