@@ -1,25 +1,13 @@
 import debounce from 'lodash.debounce/index';
 import './style.css';
 
-const _modalContainer = document.createElement('div');
-_modalContainer.classList.add('modal__container');
-
-const _modalHidden = document.createElement('div');
-_modalHidden.classList.add('modal__hidden');
-_modalContainer.appendChild(_modalHidden);
-
-const _modalShown = document.createElement('div');
-_modalShown.classList.add('modal__shown');
-_modalContainer.appendChild(_modalShown);
-
 const _eleMap = new Map();
 const _idMap = new Map();
-
-let _initialized = false;
+const _containerMap = new WeakMap();
 
 export class Modal
 {
-  static create(element)
+  static create(element, rootElement)
   {
     if(element instanceof Modal)
     {
@@ -71,8 +59,10 @@ export class Modal
     while((p = p.parentNode));
   }
 
-  constructor(element)
+  constructor(element, rootElement = document)
   {
+    this.rootElement = rootElement || document;
+
     this.modal = document.createElement('div');
     this.modal.classList.add('modal');
 
@@ -108,7 +98,7 @@ export class Modal
       element.style.removeProperty('display');
     }
 
-    _modalHidden.appendChild(this.modal)
+    this.hide();
   }
 
   appendChild(newChild)
@@ -130,6 +120,7 @@ export class Modal
 
   hide()
   {
+    const [_modalHidden, _modalShown] = _getContainerElements(this.rootElement);
     if(
       (_modalShown.contains(this.modal))
       && this.modal.dispatchEvent(_getEvent('modal-hide', this.modal, true))
@@ -138,7 +129,7 @@ export class Modal
       this.modal.classList.remove('hidden');
       _modalHidden.appendChild(this.modal)
       this._removeEvents();
-      document.dispatchEvent(_getEvent('modal-hidden', this.modal));
+      this.rootElement.dispatchEvent(_getEvent('modal-hidden', this.modal));
     }
     return this;
   }
@@ -147,23 +138,20 @@ export class Modal
   {
     this.modal.parentElement.removeChild(this.modal);
     this._removeEvents();
-    document.dispatchEvent(_getEvent('modal-removed', this.modal));
+    this.rootElement.dispatchEvent(_getEvent('modal-removed', this.modal));
     return this;
   }
 
   show()
   {
+    const [, _modalShown] = _getContainerElements(this.rootElement);
     if(
       (!_modalShown.contains(this.modal))
-      && document.dispatchEvent(_getEvent('modal-show', this.modal, true))
+      && this.rootElement.dispatchEvent(_getEvent('modal-show', this.modal, true))
     )
     {
       // add to document
       _modalShown.appendChild(this.modal)
-      if(!document.body.contains(_modalContainer))
-      {
-        document.body.appendChild(_modalContainer);
-      }
 
       // calculate position
       this._postUpdateContent();
@@ -183,9 +171,9 @@ export class Modal
       i =>
       {
         const id = i.getAttribute('id');
-        if(i.matches('.modal__content') || (document.querySelectorAll(`[modal-launcher="${id}"], [modal-closer="${id}"]`).length > 0))
+        if(i.matches('.modal__content') || (this.rootElement.querySelectorAll(`[modal-launcher="${id}"], [modal-closer="${id}"]`).length > 0))
         {
-          Modal.create(i);
+          Modal.create(i, this.rootElement);
         }
       });
 
@@ -223,15 +211,21 @@ export class Modal
     return this;
   }
 
-  static init()
+  static init(rootElement = document)
   {
-    if(_initialized)
+    if(!rootElement)
     {
+      console.error('Not a valid root element for modal initialization');
       return;
     }
-    _initialized = true;
+    if(_containerMap.has(rootElement))
+    {
+      // already been initialized
+      return;
+    }
+    _getContainerElements(rootElement);
 
-    document.addEventListener(
+    rootElement.addEventListener(
       'click', (e) =>
       {
         const closer = e.target.closest('[modal-closer]');
@@ -246,25 +240,25 @@ export class Modal
         {
           e.preventDefault();
           const modalId = launcher.getAttribute('modal-launcher');
-          const modalEle = document.getElementById(modalId) || _idMap.get(modalId);
+          const modalEle = rootElement.querySelector('#' + modalId) || _idMap.get(modalId);
           if(!modalEle)
           {
             console.error('No modal could be found with the id ' + launcher.getAttribute('modal-launcher'));
             return;
           }
 
-          Modal.create(modalEle).show();
+          Modal.create(modalEle, rootElement).show();
         }
       },
     );
 
-    document.addEventListener(
+    rootElement.addEventListener(
       'keyup', e =>
       {
         if(e.key === 'Escape' || e.key === 'Esc' || e.keyCode === 27)
         {
           // find the last modal's closer
-          const closer = document.querySelector('.modal:last-of-type .modal__content [modal-closer]');
+          const closer = rootElement.querySelector('.modal__shown .modal:last-of-type .modal__content [modal-closer]');
           if(closer)
           {
             e.preventDefault();
@@ -290,4 +284,30 @@ function _getDebounceFn(modal)
 function _getEvent(eventName, modal, cancelable = false)
 {
   return new CustomEvent(eventName, {detail: {modal}, cancelable: cancelable, bubbles: true, composed: true});
+}
+
+function _getContainerElements(rootElement)
+{
+  if(rootElement instanceof Document)
+  {
+    rootElement = rootElement.body;
+  }
+  if(!_containerMap.has(rootElement))
+  {
+    const _modalContainer = document.createElement('div');
+    _modalContainer.classList.add('modal__container');
+
+    const _modalHidden = document.createElement('div');
+    _modalHidden.classList.add('modal__hidden');
+    _modalContainer.appendChild(_modalHidden);
+
+    const _modalShown = document.createElement('div');
+    _modalShown.classList.add('modal__shown');
+    _modalContainer.appendChild(_modalShown);
+
+    rootElement.appendChild(_modalContainer);
+
+    _containerMap.set(rootElement, [_modalHidden, _modalShown]);
+  }
+  return _containerMap.get(rootElement)
 }
