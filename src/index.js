@@ -223,7 +223,6 @@ export class Modal
       // already been initialized
       return;
     }
-    _getContainerElements(rootElement);
 
     rootElement.addEventListener(
       'click', (e) =>
