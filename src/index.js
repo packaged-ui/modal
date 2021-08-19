@@ -1,9 +1,9 @@
 import debounce from 'lodash.debounce/index';
 import './style.css';
 
-const _eleMap = new Map();
-const _idMap = new Map();
-const _containerMap = new WeakMap();
+globalThis._eleMap = globalThis._eleMap || new Map();
+globalThis._idMap = globalThis._idMap || new Map();
+globalThis._containerMap = globalThis._containerMap || new WeakMap();
 
 export class Modal
 {
