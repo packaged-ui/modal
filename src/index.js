@@ -42,7 +42,7 @@ export class Modal
         return true;
       }
     }
-    while((p = p.parentNode));
+    while(p = p.parentNode || (p.getRootNode() && p.getRootNode().host));
   }
 
   static remove(element)
@@ -56,7 +56,7 @@ export class Modal
         return true;
       }
     }
-    while((p = p.parentNode));
+    while(p = p.parentNode || (p.getRootNode() && p.getRootNode().host));
   }
 
   constructor(element, rootElement = document)
