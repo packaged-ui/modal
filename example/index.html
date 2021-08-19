@@ -1,4 +1,4 @@
-<html>
+<html lang="en">
 <body>
 
 <div id="my-modal" style="display: none" modal-class="test-modal">
@@ -13,7 +13,11 @@
 
     <div id="another-nested-modal">
       another nested modal
-      <button modal-closer>Close</button>
+      <form action="" method="get" modal-closer>
+        <label><input name="test"></label>
+        <button type="button" modal-closer>Close</button>
+        <button type="submit">Submit</button>
+      </form>
     </div>
     <button modal-launcher="another-nested-modal">show another nested</button>
 
