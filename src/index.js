@@ -127,7 +127,7 @@ export class Modal
     )
     {
       this.modal.classList.remove('hidden');
-      _modalHidden.appendChild(this.modal)
+      _modalHidden.appendChild(this.modal);
       this._removeEvents();
       this.rootElement.dispatchEvent(_getEvent('modal-hidden', this.modal));
     }
@@ -151,7 +151,7 @@ export class Modal
     )
     {
       // add to document
-      _modalShown.appendChild(this.modal)
+      _modalShown.appendChild(this.modal);
 
       // calculate position
       this._postUpdateContent();
@@ -283,7 +283,7 @@ function _getDebounceFn(modal)
 {
   if(!_debounceMap.has(modal))
   {
-    _debounceMap.set(modal, debounce(modal.updatePosition.bind(modal), 200, {'maxWait': 500}))
+    _debounceMap.set(modal, debounce(modal.updatePosition.bind(modal), 200, {'maxWait': 500}));
   }
   return _debounceMap.get(modal);
 }
@@ -316,5 +316,5 @@ function _getContainerElements(rootElement)
 
     _containerMap.set(rootElement, [_modalHidden, _modalShown]);
   }
-  return _containerMap.get(rootElement)
+  return _containerMap.get(rootElement);
 }
