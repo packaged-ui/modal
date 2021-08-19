@@ -230,14 +230,12 @@ export class Modal
         const closer = e.target.closest('[modal-closer]');
         if(closer)
         {
-          e.preventDefault();
           Modal.hide(e.target);
         }
 
         const launcher = e.target.closest('[modal-launcher]');
         if(launcher)
         {
-          e.preventDefault();
           const modalId = launcher.getAttribute('modal-launcher');
           const modalEle = rootElement.querySelector('#' + modalId) || _idMap.get(modalId);
           if(!modalEle)
@@ -271,7 +269,6 @@ export class Modal
           const closer = rootElement.querySelector('.modal__shown .modal:last-of-type .modal__content [modal-closer]');
           if(closer)
           {
-            e.preventDefault();
             Modal.hide(closer);
           }
         }
