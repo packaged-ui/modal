@@ -18,6 +18,7 @@ export class Modal
     {
       const modal = new this.prototype.constructor(...arguments);
       _eleMap.set(element, modal);
+      _eleMap.set(modal.modal, modal);
       if(element.hasAttribute('id'))
       {
         _idMap.set(element.getAttribute('id'), modal);
