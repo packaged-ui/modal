@@ -228,6 +228,7 @@ export class Modal
       // already been initialized
       return;
     }
+    _containerMap.set(rootElement, false);
 
     rootElement.addEventListener(
       'click', (e) =>
@@ -304,7 +305,7 @@ function _getContainerElements(rootElement)
   {
     rootElement = rootElement.body;
   }
-  if(!_containerMap.has(rootElement))
+  if(!_containerMap.has(rootElement) || !_containerMap.get(rootElement))
   {
     const _modalContainer = document.createElement('div');
     _modalContainer.classList.add('modal__container');
