@@ -31,32 +31,36 @@ export class Modal
     return _eleMap.has(element);
   }
 
-  static hide(element)
+  static find(element)
   {
     let p = element;
     do
     {
       if(Modal.has(p))
       {
-        Modal.create(p).hide();
-        return true;
+        return Modal.create(p);
       }
     }
     while(p = p.parentNode || (p.getRootNode() && p.getRootNode().host));
+    return null;
+  }
+
+  static hide(element)
+  {
+    const search = Modal.find(element);
+    if(search)
+    {
+      search.hide();
+    }
   }
 
   static remove(element)
   {
-    let p = element;
-    do
+    const search = Modal.find(element);
+    if(search)
     {
-      if(Modal.has(p))
-      {
-        Modal.create(p).remove();
-        return true;
-      }
+      search.remove();
     }
-    while(p = p.parentNode || (p.getRootNode() && p.getRootNode().host));
   }
 
   constructor(element, rootElement = document)
