@@ -52,7 +52,9 @@ export class Modal
     if(search)
     {
       search.hide();
+      return true;
     }
+    return false;
   }
 
   static remove(element)
@@ -61,7 +63,9 @@ export class Modal
     if(search)
     {
       search.remove();
+      return true;
     }
+    return false;
   }
 
   constructor(element, rootElement = document)
