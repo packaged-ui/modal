@@ -260,17 +260,6 @@ export class Modal
     );
 
     rootElement.addEventListener(
-      'submit', (e) =>
-      {
-        const closer = e.target.closest('[modal-closer]');
-        if(closer)
-        {
-          Modal.hide(e.target);
-        }
-      },
-    );
-
-    rootElement.addEventListener(
       'keyup', e =>
       {
         if(e.key === 'Escape' || e.key === 'Esc' || e.keyCode === 27)

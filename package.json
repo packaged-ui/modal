@@ -6,10 +6,10 @@
   "license": "MIT",
   "main": "src/modal.js",
   "devDependencies": {
-    "css-loader": "^2.1.1",
-    "style-loader": "^0.23.1",
-    "webpack": "^4.30.0",
-    "webpack-cli": "^3.3.1"
+    "css-loader": "^6.2.0",
+    "style-loader": "^3.2.1",
+    "webpack": "^5.52.0",
+    "webpack-cli": "^4.8.0"
   },
   "scripts": {
     "build": "webpack"
