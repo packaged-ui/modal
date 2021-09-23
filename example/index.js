@@ -4,5 +4,5 @@ export {Modal};
 
 document.querySelector('#remove-btn').addEventListener('click', () =>
 {
-  Modal.remove(document.querySelector('#my-modal'));
+  Modal.remove(document.querySelector('#nested-modal'));
 });

@@ -186,6 +186,22 @@ export class Modal
         }
       });
 
+    if(!this.content.querySelector('[modal-closer]'))
+    {
+      const autoCloser = document.createElement('div');
+      autoCloser.setAttribute('modal-closer', '');
+      autoCloser.classList.add('auto-closer');
+      this.content.append(autoCloser);
+    }
+    else if(this.content.querySelector('[modal-closer]:not(.auto-closer)'))
+    {
+      const autoCloser = this.content.querySelector('[modal-closer].auto-closer');
+      if(autoCloser)
+      {
+        autoCloser.remove();
+      }
+    }
+
     this.updatePosition();
   }
 

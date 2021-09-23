@@ -78,3 +78,21 @@
     max-height: 100% !important;
   }
 }
+
+.auto-closer {
+  position:                  absolute;
+  top:                       0;
+  right:                     0;
+  cursor:                    pointer;
+  padding:                   1px 5px 2px 7px;
+  border-bottom-left-radius: 11px;
+  background:                white;
+}
+
+.auto-closer:hover {
+  color: #b20000;
+}
+
+.auto-closer:before {
+  content: '\00D7';
+}
