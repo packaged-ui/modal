@@ -262,6 +262,7 @@ export class Modal
         const launcher = e.target.closest('[modal-launcher]');
         if(launcher)
         {
+          e.preventDefault();
           const modalId = launcher.getAttribute('modal-launcher');
           const modalEle = rootElement.querySelector('#' + modalId) || _idMap.get(modalId);
           if(!modalEle)
@@ -272,7 +273,7 @@ export class Modal
 
           Modal.create(modalEle, rootElement).show();
         }
-      },
+      }
     );
 
     rootElement.addEventListener(
@@ -287,7 +288,7 @@ export class Modal
             Modal.hide(closer);
           }
         }
-      },
+      }
     );
   }
 }
