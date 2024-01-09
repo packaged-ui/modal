@@ -1,5 +1,4 @@
 import debounce from 'lodash.debounce/index';
-import './style.css';
 
 globalThis._eleMap = globalThis._eleMap || new Map();
 globalThis._idMap = globalThis._idMap || new Map();
